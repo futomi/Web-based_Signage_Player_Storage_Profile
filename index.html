@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Architecture and Requirements for Web-based Signage Player - Storage Profile</title>
+<script>
+(function () {
+  var els = ['section', 'article', 'aside', 'nav', 'header', 'footer', 'time'];
+  for (var i=0; i<els.length; i++ ) {
+    document.createElement(els[i]);
+  }
+})();
+</script>
+<link href="https://www.w3.org/community/src/css/spec/bg-draft.css" rel="stylesheet">
+<style>
+body {
+	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+#sub-title {
+	font-size: 150%;
+	font-weight: bold;
+}
+dfn {
+	font-weight: bold;
+	font-style: normal;
+}
+figcaption {
+	font-size: 90%;
+	font-style: italic;
+}
+dl {
+	margin-left: 1em;
+}
+table {
+	width: 90%;
+	margin: 1em auto;
+	border-top: 1px solid #e5eff8;
+	border-right: 1px solid #e5eff8;
+	border-collapse: collapse;
+}
+thead th {
+	border-bottom: 1px solid #e5eff8;
+	border-left: 1px solid #e5eff8;
+	background: #f4f9fe;
+	text-align: center;
+	color: #66a3d3;
+	padding: 0.3em 1em;
+}
+tbody th, td {
+	color: #678197;
+	border-bottom: 1px solid #e5eff8;
+	border-left: 1px solid #e5eff8;
+	padding: 0.3em 1em;
+	text-align: center;
+}
+caption {
+	color: #678197;
+	font-weight: bold;
+	margin-bottom: 0.3em;
+}
+code {
+	font-family: Consolas, monospace;
+}
+figure {
+	margin: 1em 1em;
+}
+figure pre.code {
+	display: block;
+	background-color: #eeeeee;
+	padding: 0.5em 1em;
+	margin: 0;
+}
+figure figcaption {
+	display: block;
+	margin: 0.5em 0em;	
+}
+</style>
+</head>
+<body>
+<header class="head" id="head">
+	<p><a href="http://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"></a></p>
+	<h1>Architecture and Requirements for Web-based Signage Player - Storage Profile</h1>
+	<p id="sub-title">Editor's Draft
+		<time datetime="2014-10-02">5 Oct 2014</time>
+	</p>
+	<dl>
+		<dt>This Version:</dt>
+		<dd>TBD</dd>
+		<dt>Latest Published Version:</dt>
+		<dd>TBD</dd>
+		<dt>Latest Editor's Draft:</dt>
+		<dd>TBD</dd>
+		<dt>Previous Versions:</dt>
+		<dd>TBD</dd>
+		<dt>Editor:</dt>
+		<dd><a href="mailto:futomi.hatano@newphoria.co.jp">Futomi Hatano</a>, Newphoria Corporation</dd>
+	</dl>
+	<p class="copyright">Copyright &copy; 2012 <a href="http://www.w3.org/"><abbr title="World Wide
+   Web Consortium">W3C</abbr></a><sup>&#174;</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts
+   Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research
+   Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>), published by the <a href="http://www.w3.org/community/websignage/">Web-based Signage Business Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>. A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available.</p>
+</header>
+<section>
+	<h2 id="abstract">Abstract</h2>
+	<p>This Profile defines requirements for storing downloaded files and  playing the stored contents in the terminal </p>
+	<p>Web-based Signage is basically assumed to be online. But some signage terminals are connected to a narrowband network, some signage terminals use a time-limited network. Especially when playing videos, instability of the the network quality could cause a service outage. </p>
+	<p>Storeing contents and playing the stored contents ensure that contents are played  reliably regardless of the state of the network, that the network traffic is reduced, and that web-based signage services are   cost-effective. Storeing contents and playing the stored contents are essential for web-based signage. </p>
+</section>
+<section>
+	<h2 class="no-num no-toc" id="status-of-this-document">Status of this document</h2>
+	<p>This specification was published by the <a href="http://www.w3.org/community/websignage/">Web-based Signage Business Group</a>. It is not a W3C Standard nor is it on the W3C Standards Track. Please note that under the <a href="http://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a> there is a limited opt-out and other conditions apply. Learn more about <a href="http://www.w3.org/community/">W3C Community and Business Groups</a>.</p>
+</section>
+<section>
+	<h2>Conformance</h2>
+	<p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.</p>
+	<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in the normative parts of this document are to be interpreted as described in RFC2119. For readability, these words do not appear in all uppercase letters in this document. <a href="#refsRFC2119">[RFC2119]</a></p>
+</section>
+<nav>
+	<h2 id="toc">Table of Contents</h2>
+	<ol class="toc">
+		<li><a href="#introduction">1 Introduction</a></li>
+		<li><a href="#terminology">2 Scope and terminology</a></li>
+		<li>
+			<a href="#storing_contents">3 Storing contents</a>
+			<ol class="toc">
+				<li><a href="#storing_contents_idb">3.1 Indexed Database API</a></li>
+				<li><a href="#storing_contents_fsys">3.2 File API: Directories and System</a></li>
+			</ol>
+		</li>
+		<li> <a href="#playing_stored_contents">4 Playing the stored contents</a>
+			<ol class="toc">
+				<li><a href="#playing_stored_contents_idb">4.1 Indexed Database API</a></li>
+				<li><a href="#playing_stored_contents_fsys">4.2 File API: Directories and System</a></li>
+			</ol>
+		</li>
+		<li><a href="#cors">5 Cross-Origin Resource Sharing</a></li>
+		<li><a href="#background_fetching_and_storing">6 Background fetching and storing</a></li>
+		<li><a href="#runtime_conformance_test_suites">7 Runtime conformance test suites</a></li>
+		<li><a href="#references">References</a></li>
+	</ol>
+</nav>
+<section>
+	<h2 id="introduction">1 Introduction</h2>
+	<p><i>This section is non-normative.</i></p>
+	<p>The &quot;<b>Architecture and Requirements for Web-based Signage Player</b>&quot; defines precise requirements for web-based signage players.</p>
+	<p>The Architecture and Requirements for Web-based Signage Player consist of a number of profiles. Basically, web-based signage is based on the core profile (this document). As necessary, web-based signage systems adopt the other profiles additionally.</p>
+	<p>These profiles are also intended to be used as product specification sheets of web-based signage products for vendors, RFP (request for proposal) used by the signage operators to request SDCs (Systems Development Corporations) to develop a web-based signage system , etc.</p>
+	<p>Through these activities, the Web-based Signage Business Group aims to:</p>
+	<ul>
+		<li>Diffuse web-based signage in the digital signage industry.</li>
+		<li>Share technical knowledge of web-based signage in the digital signage industry.</li>
+		<li>Find required APIs or functions for web-based signage, and propose the relevant working groups as necessary.</li>
+	</ul>
+	<p>We believe that web-based signage contribute to cost-efficiencies and rich functionalities in the digital signage industry. As a result, we hope that the digital signage industry will grow up increasingly.</p>
+</section>
+<section>
+	<h2 id="terminology">2 Scope and terminology</h2>
+	<p><dfn id="web-based_signage">Web-based signage</dfn> is digital signage whose contents are created using web-technologies. Besides, it has a capability of connecting to a network. It is not a matter whether the network is the Internet or not. The web-based signage includes the terminal in an intranet.</p>
+	<p>A <dfn id="player">player</dfn> plays <a href="#contents">contents</a> for <a href="#web-based_signage">web-based signage</a>. It is a set of an <a href="#application">application</a> and a <a href="#runtime">runtime</a>. This document is not aimed for limitation of underlying hardware and the operating system. Basically, <a href="#web-based_signage">web-based signage</a> is based on the core profile (this document). As necessary, web-based signage systems adopt the other profiles additionally.</p>
+	<p>An <dfn id="application">application</dfn> is comprised of the software such as frameworks or the libraries for signage. An <a href="#application">application</a> is a set of JavaScript programs and style sheets and HTML. An <a href="#application">application</a> is run on a <a href="#runtime">runtime</a>, fetches contents form a content server, then plays the <a href="#contents">contents</a> appropriately. The architecture and the functions of the applications will be prescribed as the features for <a href="#web-based_signage">web-based signage</a>.</p>
+	<p>A <a href="#player">player</a> uses the functions and the expressions which the underlying <a href="#runtime">runtime</a> provides. Basically, they are specified in HTML5 in wide sense. This document does not restrict the use of the functions which are out of scope of this document. <a href="#application">Application</a>s may use such functions and expressions.</p>
+	<p>A <dfn id="runtime">runtime</dfn> is a common web browser (e.g. webkit-based browsers, Firefox, IE, etc.) or a web-based application runtime (e.g. Firefox OS, Tizen, Windows 8, etc.) installed in tablets, PCs, STBs, TV (most of current high-end TV products implement a web-browser), etc. On the other hand, it is not a dedicated subset or subset-based derivation of HTML5 in wide sense. Basically, <a href="#runtime">runtime</a> offers functions called HTML5 in the wide sense. Basically, the specifications of HTML5 in wide sense are be specified particularly by W3C.</p>
+	<p>This document mainly defines the requirements for <a href="#application">application</a>s. But it implicitly includes the requirements for <a href="#runtime">runtime</a>s because <a href="#application">application</a>s must use web technologies implemented in <a href="#runtime">runtime</a>s to meet the requirements for <a href="#application">application</a>s. Therefore, this document defines the requirements for players (<a href="#application">application</a>s and <a href="#runtime">runtime</a>s).</p>
+	<p><dfn id="contents">Contents</dfn> mean everything shown on a digital signage display. The contents of web-based signage are served by a content server through a network. They consist of HTML, CSS, and JavaScript. Some contents are possibly created using XML-based technologies which are embedded in HTML, such as SVG. <a href="#refsSVG">[SVG]</a></p>
+	<p>A <dfn id="scene">scene</dfn> means a part of web-based signage <a href="#contents">contents</a>. In this document, It is limitted to videos and audios. Generally, <a href="#web-based_signage">web-based signage</a> plays a sequence of <a href="#scene">scene</a>s, and shows each <a href="#scene">scene</a> one by one continuously and repeatedly. See the <a href="http://futomi.github.io/Web-based_Signage_Player_Core_Profile/">Core Profile</a> for more details.</p>
+</section>
+<section>
+	<h2 id="storing_contents">3 Storing contents</h2>
+	<p>The <a href="#application">application</a> gets a content file from the CDN using <cite>XMLHttpRequest</cite>. Setting the <code>responseType</code> attribute of the <code>XMLHttpRequest</code> object to &quot;<code>blob</code>&quot;, the <a href="#application">application</a> gets the file as a Blob object.</p>
+	<figure>
+		<figcaption>XMLHttpRequest code example</figcaption>
+		<pre class="code"><code>loadVideoFile();
+
+// Download a video file as a blob object using XHR
+function loadVideoFile() {
+    var xhr = new XMLHttpRequest();
+    xhr.open(&quot;GET&quot;, &quot;v.mp4&quot;);
+    xhr.responseType = &quot;blob&quot;;
+    xhr.onload = function() {
+        if(xhr.status === 200) {
+            var blob = xhr.response;
+            // Save the blob to the storage
+            if(window.indexedDB) {
+                saveBlobIdb(blob);
+            } else if(window.webkitRequestFileSystem) {
+                saveBlobFsys(blob);
+            }
+        }
+    };
+    xhr.send();
+}</code></pre>
+	</figure>
+	<p>The <a href="#application">application</a> can use <cite>Indexed Database API</cite> or <cite>File API: Directories and System</cite> to store files. These APIs allow scripts to store Blob objects directly.</p>
+	<p>The <a href="#runtime">runtime</a> must support <cite>XMLHttpRequest</cite>. The <a href="#runtime">runtime</a> must support <cite>Indexed Database API</cite> or <cite>File API: Directories and System</cite>. Besides the <a href="#runtime">runtime</a> must support storing Blob objects directly, which is specified in <cite>File API</cite>. <a href="#refsXHR">[XHR]</a> <a href="refsIDB">[IDB]</a> <a href="#refsFILESYS">[FSYS]</a> <a href="#refsFILE">[FILE]</a></p>
+	<section>
+	<h3 id="storing_contents_idb">3.1 Indexed Database API</h3>
+	<figure>
+		<figcaption>Indexed Database API code example</figcaption>
+		<pre class="code"><code>// Save the blob in the DB
+function saveBlobIdb(blob) {
+    var db_name = &quot;mydb&quot;;
+    var store_name = &quot;mystore&quot;;
+    var file_name = &quot;v.mp4&quot;;
+    // Open the DB
+    var idb = window.indexedDB;
+    var openreq = idb.open(db_name, 1);
+    // Create a object store
+    openreq.onupgradeneeded = function(event) {
+        var db = event.target.result;
+        var params = { keyPath: &quot;filename&quot; };
+        var store = db.createObjectStore(store_name, params);
+    };
+    // Save a Blob object
+    openreq.onsuccess = function(event) {
+        var db = event.target.result;
+        var transaction = db.transaction([store_name], &quot;readwrite&quot;);
+        var store = transaction.objectStore(store_name);
+        var putreq = store.put({ &quot;filename&quot;: file_name, &quot;data&quot;: blob});
+        putreq.onsuccess = function () {
+            // Get the blob from the DB
+            window.setTimeout(function() {
+                getBlobIdb(file_name);
+            }, 3000);
+        };
+    };
+}</code></pre>
+	</figure>
+	</section>
+	<section>
+	<h3 id="storing_contents_fsys">3.2 File API: Directories and System</h3>
+	<figure>
+		<figcaption>File API: Directories and System code example</figcaption>
+		<pre class="code"><code>// Save the blob in the File System
+function saveBlobFsys(blob) {
+    var file_name = &quot;v.mp4&quot;;
+    // Open the file sytem
+    window.webkitRequestFileSystem(window.TEMPORARY, 10*1024*1024, function(fs) {
+        // Create a file in the root
+        fs.root.getFile(file_name, { create: true }, function(fileentry) {
+            // Write the data to the file
+            fileentry.createWriter(function(writer) {
+                writer.write(blob);
+                writer.onwriteend = function() {
+                    // Get the blob from the file system
+                    getBlobFsys(file_name);
+                };
+            });
+        });
+    });
+}</code></pre>
+	</figure>
+	</section>
+</section>
+<section>
+	<h2 id="playing_stored_contents">4 Playing the stored contents</h2>
+	<section>
+		<h3 id="playing_stored_contents_idb">4.1. Indexed Database API</h3>
+		<p>If the <a href="#application">application</a> uses <cite>Indexed Database API</cite> to store files, it gets the file as a Blob object. The <a href="#application">application</a> creates a blob URL from the Blob object using <code>URL.createObjectURL()</code> method, which is specified in <cite>File API</cite>. Then The <a href="#application">application</a> creates a appropriate HTML element (e.g. <code>video</code> element if a video file, <code>audio</code> element if a audio file, <code>img</code> element if a image file) and sets the <code>src</code> attribute to the blob URL.</p>
+		<figure>
+			<figcaption>Indexed Database API code example</figcaption>
+			<pre class="code"><code>// Get the blob from the DB
+function getBlobIdb(file_name) {
+    var db_name = &quot;mydb&quot;;
+    var store_name = &quot;mystore&quot;;
+    // Open the DB
+    var idb = window.indexedDB;
+    var openreq = idb.open(db_name, 1);
+    // Get the blob object
+    openreq.onsuccess = function(event) {
+        var db = event.target.result;
+        var transaction = db.transaction([store_name], &quot;readonly&quot;);
+        var store = transaction.objectStore(store_name);
+        var getreq = store.get(file_name);
+        // Create a blob URL and play the video
+        getreq.onsuccess = function(event) {
+            var rec = event.target.result;
+            var blob_url = window.URL.createObjectURL(rec[&quot;data&quot;]);
+            playVideoIdb(blob_url);
+        };
+    };
+}
+
+// Play the video
+function playVideoIdb(url) {
+    // Create a video element
+    var el = document.createElement(&quot;video&quot;);
+    el.src = url;
+    document.body.appendChild(el);
+    // Play the video
+    el.play();
+    // When the playback ends, remove the video element
+    el.addEventListener(&quot;ended&quot;, removeVideoElementIdb, false);
+}
+
+// Remove the video element
+function removeVideoElementIdb(event) {
+    var el = event.target;
+    // Remove the event listener
+    el.removeEventListener(&quot;ended&quot;, removeVideoElementIdb, false);
+    // Release the blob URL
+    window.URL.revokeObjectURL(el.src);
+    // Remove the video element
+    el.parentNode.removeChild(el);
+}</code></pre>
+		</figure>
+		<p>The <a href="#application">application</a> is strongly engouraged to call <code>URL.revokeObjectURL()</code> to release the blob URL when the relevant HTML element was removed from the document. If the <a href="#application">application</a> removes the element associated with the blob URL without releasing the blob URL, the garbage collection of the JavaScript engine in the <a href="#runtime">runtime</a> doesn't work as expected. It causes memory leak and prevents stable long run as a signage terminal.</p>
+		<p>The <a href="#runtime">runtime</a> must support <code>URL.createObjectURL()</code> method. <a href="#refsFILE">[FILE]</a> </p>
+	</section>
+	<section>
+		<h3 id="playing_stored_contents_idb">4.2 File API: Directories and System</h3>
+		<p>If the <a href="#application">application</a> uses <cite>File API: Directories and System</cite> to store files, </p>
+		<figure>
+			<figcaption>File API: Directories and System code example</figcaption>
+			<pre class="code"><code>// Get the blob from the file system
+function getBlobFsys(file_name) {
+    // Open the file sytem
+    window.webkitRequestFileSystem(window.TEMPORARY, 10*1024*1024, function(fs) {
+        // Get the file
+        fs.root.getFile(file_name, { create: false }, function(fileentry) {
+            // Create a file URL and play the video
+            var file_url = fileentry.toURL();
+            playVideoFsys(file_url);
+        });
+    });
+}
+
+// Play the video
+function playVideoFsys(url) {
+    // Create a video element
+    var el = document.createElement(&quot;video&quot;);
+    el.src = url;
+    document.body.appendChild(el);
+    // Play the video
+    el.play();
+    // When the playback ends, remove the video element
+    el.addEventListener(&quot;ended&quot;, removeVideoElementFsys, false);
+}
+
+// Remove the video element
+function removeVideoElementFsys(event) {
+    var el = event.target;
+    // Remove the event listener
+    el.removeEventListener(&quot;ended&quot;, removeVideoElementFsys, false);
+    // Remove the video element
+    el.parentNode.removeChild(el);
+}</code></pre>
+		</figure>
+	</section>
+</section>
+<section>
+	<h2 id="cors">5 Cross-Origin Resource Sharing</h2>
+	<p>In practice, A <a href="#web-based_signage">web-based signage</a> system consists of not only <a href="#player">player</a>s but also content delivery servers and content management systems. In some cases, script files assosiated with the <a href="#application">application</a> could be hosted in other servers. That is, the origins of <a href="#contents">contents</a> and <a href="#application">application</a> are not necessarily same.</p>
+	<p><cite>XMLHttpRequest</cite> normally does not allow <a href="#application">application</a>s (scripts) to fetch files whose origin is different from the <a href="#application">application</a>. To do so, the <a href="#runtime">runtime</a> and content delivery servers must support <cite>Cross-Origin Resource Sharing</cite>. The conformant <a href="#runtime">runtime</a> must support at least <a href="http://www.w3.org/TR/cors/#origin-request-header">Origin Request Header</a> and <a href="http://www.w3.org/TR/cors/#access-control-allow-origin-response-header">Access-Control-Allow-Origin</a> specified in <cite>Cross-Origin Resource Sharing</cite>. <a href="#refsCORS">[CORS]</a></p>
+</section>
+<section>
+	<h2 id="background_fetching_and_storing">6 Background fetching and storing</h2>
+	<p>TBD</p>
+</section>
+<section>
+	<h2 id="runtime_conformance_test_suites">7 Runtime conformance test suites</h2>
+	<p>The conformant <a href="#runtime">runtime</a> must run the test suites appropriately without any JavaScript error:</p>
+	<dl>
+		<dt><a href="test/foreground.html">Foreground fetching and storering test</a></dt>
+		<dd>
+			<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
+			<p>The <a href="#runtime">runtime</a> downloads a video file as a blob object using <cite>XMLHttpRequest</cite>. Then the <a href="#runtime">runtime</a> stores the file using <cite>Indexed Database API</cite> if supported. if not, the <a href="#runtime">runtime</a> try to use <cite>File API: Directories and System</cite>. </p>
+			<p>If the file is stored successfully, the <a href="#runtime">runtime</a> gets the file as a blob object from the storage, creates a <code>video</code> element, then plays the video.		</p>
+		</dd>
+		<dt><a href="test/gackground.html">Backcground fetching and storering test</a></dt>
+		<dd>
+			<p>If the <a href="#runtime">runtime</a> support the background storing, it must run this test appropriately.</p>
+			<p>This test is almost same as the foreground storing test except using Web Workers. In this test, all of <cite>XMLHttpRequest</cite>, <cite>Indexed Database API</cite>, and <cite>File API: Directories</cite> are used in a worker thread.</p>
+			<p>If the <a href="#runtime">runtime</a> gets a Blob URL or a File URL successfully through a message chanel, it creates a <code>video</code> element, then plays the video. </p>
+		</dd>
+		<dt><a href="test/cors.html">CORS test</a></dt>
+		<dd><p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
+			<p>The <a href="#runtime">runtime</a> downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from the test script.</p>
+			<p>If the image file is downloaded successfully, it will be shown in this test page.</p>
+		</dd>
+	</dl>
+</section>
+<section>
+	<h2 id="references">References</h2>
+	<p>All references are normative unless marked &quot;Non-normative&quot;.</p>
+	<dl>
+		<dt id="refsCORS">[CORS]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing</a></cite>, Anne van Kesteren. W3C.</dd>
+		<dt id="refsFILE">[FILE]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/FileAPI/">File API</a></cite>, Arun Ranganathan, Jonas Sicking. W3C.</dd>
+		<dt id="refsFSYS">[FSYS]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/file-system-api/">File API: Directories and System</a></cite>, Eric Uhrhane. W3C.</dd>
+		<dt id="refsHTML5">[HTML5]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/html5/">HTML5</a></cite>, Robin Berjon, Travis Leithead, Erika Doyle Navara, Edward O'Connor, Silvia Pfeiffer, Ian Hickson. W3C.</dd>
+		<dt id="refsIDB">[IDB]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/IndexedDB/">Indexed Database API</a></cite>, Nikunj Mehta, Jonas Sicking, Eliot Graff, Andrei Popescu, Jeremy Orlow, Joshua Bell. W3C.</dd>
+		<dt id="refsRFC2119">[RFC2119]</dt>
+		<dd><cite><a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a></cite>, S. Bradner. IETF.</dd>
+		<dt id="refsWORKERS">[WORKERS]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/workers/">Web Workers</a></cite>, Ian Hickson. W3C.</dd>
+		<dt id="refsXHR">[XHR]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/XMLHttpRequest/">XMLHttpRequest Level 1</a></cite>, Anne van Kesteren, Julian Aubourg, 송정기 (Jungkee Song), Hallvord R. M. Steen. W3C.</dd>
+	</dl>
+</section>
+</body>
+</html>

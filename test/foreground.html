@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Foreground fetching and storering test - Storage Profile</title>
+<style>
+body {
+	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+h1 {
+	font-size: 140%;
+}
+</style>
+</head>
+<body>
+
+<h1>Foreground fetching and storering test - Storage Profile</h1>
+<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
+<p>The <a href="#runtime">runtime</a> downloads a video file as a blob object using <cite>XMLHttpRequest</cite>. Then the <a href="#runtime">runtime</a> stores the file using <cite>Indexed Database API</cite> if supported. if not, the <a href="#runtime">runtime</a> try to use <cite>File API: Directories and System</cite>. </p>
+<p>If the file is stored successfully, the <a href="#runtime">runtime</a> gets the file as a blob object from the storage, creates a <code>video</code> element, then plays the video.		</p>
+
+<script>
+(function () {
+
+window.addEventListener("load", loadVideoFile, false);
+
+// Download a video file as a blob object using XHR
+function loadVideoFile() {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "v.mp4");
+	xhr.responseType = "blob";
+	xhr.onload = function() {
+		if(xhr.status === 200) {
+			var blob = xhr.response;
+			// Save the blob to the storage
+			if(window.indexedDB) {
+				saveBlobIdb(blob);
+			} else if(window.webkitRequestFileSystem) {
+				saveBlobFsys(blob);
+			}
+		}
+	};
+	xhr.send();
+}
+
+/* ------------------------------------------------------------------
+* File API: Directories and System
+* ---------------------------------------------------------------- */
+
+// Save the blob in the File System
+function saveBlobFsys(blob) {
+	var file_name = "v.mp4";
+	// Open the file sytem
+	window.webkitRequestFileSystem(window.TEMPORARY, 10*1024*1024, function(fs) {
+		// Create a file in the root
+		fs.root.getFile(file_name, { create: true }, function(fileentry) {
+			// Write the data to the file
+			fileentry.createWriter(function(writer) {
+				writer.write(blob);
+				writer.onwriteend = function() {
+					// Get the blob from the file system
+					getBlobFsys(file_name);
+				};
+			});
+		});
+	});
+}
+
+// Get the blob from the file system
+function getBlobFsys(file_name) {
+	// Open the file sytem
+	window.webkitRequestFileSystem(window.TEMPORARY, 10*1024*1024, function(fs) {
+		// Get the file
+		fs.root.getFile(file_name, { create: false }, function(fileentry) {
+			// Create a file URL and play the video
+			var file_url = fileentry.toURL();
+			playVideoFsys(file_url);
+		});
+	});
+}
+
+// Play the video
+function playVideoFsys(url) {
+	// Create a video element
+	var el = document.createElement("video");
+	el.src = url;
+	document.body.appendChild(el);
+	// Play the video
+	el.play();
+	// When the playback ends, remove the video element
+	el.addEventListener("ended", removeVideoElementFsys, false);
+}
+
+// Remove the video element
+function removeVideoElementFsys(event) {
+	var el = event.target;
+	// Remove the event listener
+	el.removeEventListener("ended", removeVideoElementFsys, false);
+	// Remove the video element
+	el.parentNode.removeChild(el);
+}
+
+/* ------------------------------------------------------------------
+* Indexed Database API
+* ---------------------------------------------------------------- */
+
+// Save the blob in the DB
+function saveBlobIdb(blob) {
+	var db_name = "mydb";
+	var store_name = "mystore";
+	var file_name = "v.mp4";
+	// Open the DB
+	var idb = window.indexedDB;
+	var openreq = idb.open(db_name, 1);
+	// Create a object store
+	openreq.onupgradeneeded = function(event) {
+		var db = event.target.result;
+		var params = { keyPath: "filename" };
+		var store = db.createObjectStore(store_name, params);
+	};
+	// Save a Blob object
+	openreq.onsuccess = function(event) {
+		var db = event.target.result;
+		var transaction = db.transaction([store_name], "readwrite");
+		var store = transaction.objectStore(store_name);
+		var putreq = store.put({ "filename": file_name, "data": blob});
+		putreq.onsuccess = function () {
+			// Get the blob from the DB
+			window.setTimeout(function() {
+				getBlobIdb(file_name);
+			}, 3000);
+		};
+	};
+}
+
+// Get the blob from the DB
+function getBlobIdb(file_name) {
+	var db_name = "mydb";
+	var store_name = "mystore";
+	// Open the DB
+	var idb = window.indexedDB;
+	var openreq = idb.open(db_name, 1);
+	// Get the blob object
+	openreq.onsuccess = function(event) {
+		var db = event.target.result;
+		var transaction = db.transaction([store_name], "readonly");
+		var store = transaction.objectStore(store_name);
+		var getreq = store.get(file_name);
+		// Create a blob URL and play the video
+		getreq.onsuccess = function(event) {
+			var rec = event.target.result;
+			var blob_url = window.URL.createObjectURL(rec["data"]);
+			playVideoIdb(blob_url);
+		};
+	};
+}
+
+// Play the video
+function playVideoIdb(url) {
+	// Create a video element
+	var el = document.createElement("video");
+	el.src = url;
+	document.body.appendChild(el);
+	// Play the video
+	el.play();
+	// When the playback ends, remove the video element
+	el.addEventListener("ended", removeVideoElementIdb, false);
+}
+
+// Remove the video element
+function removeVideoElementIdb(event) {
+	var el = event.target;
+	// Remove the event listener
+	el.removeEventListener("ended", removeVideoElementIdb, false);
+	// Release the blob URL
+	window.URL.revokeObjectURL(el.src);
+	// Remove the video element
+	el.parentNode.removeChild(el);
+}
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CORS test - Storage Profile</title>
+<style>
+body {
+	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+h1 {
+	font-size: 140%;
+}
+#box {
+	width: 400px;
+	height: 300px;
+	background: radial-gradient(ellipse farthest-side at top,#73646e 0,#3c3237 100%);
+	text-align: center;
+}
+#box img {
+	margin-top: 50px;
+}
+</style>
+</head>
+<body>
+
+<h1>CORS test - Storage Profile</h1>
+<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
+<p>The <a href="#runtime">runtime</a> downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from the test script.</p>
+<p>If the image file is downloaded successfully, it will be shown in this test page.</p>
+
+<div id="box"></div>
+
+<p>This test uses an image file hosted in <a href="http://www.html5rocks.com/en/">HTML5 Rocks</a>. The image file is hosted <a href="http://www.html5rocks.com/static/images/mastheads/h5r-shadow.png">here</a>. If the image file is downloaded successfully, you will see the HTML Rocks logo in the block above.</p>
+
+<script>
+(function () {
+
+window.addEventListener("load",function() {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "http://www.html5rocks.com/static/images/mastheads/h5r-shadow.png");
+	xhr.responseType = "blob";
+	xhr.onload = function() {
+		if(xhr.status === 200) {
+			var el = document.createElement("img");
+			el.src = window.URL.createObjectURL(xhr.response);
+			document.getElementById("box").appendChild(el);
+		}
+	};
+	xhr.send();
+}, false);
+
+})();
+</script>
+
+</body>
+</html>
