@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quota Management test - Storage Profile</title>
+<style>
+body {
+	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+h1 {
+	font-size: 140%;
+}
+code {
+	font-family: Consolas, monospace;
+}
+#msg.error {
+	color: red;
+}
+#msg.success {
+	color: green;
+}
+meter {
+	width: 300px;
+}
+dl {
+	width: 300px;
+	height: 90px;
+	padding: 0px;
+	border-top: 3px solid #888888;
+	border-bottom: 2px solid #888888;
+}
+dt,dd {
+	margin: 0px;
+	padding: 0px 20px;
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;	
+	border-bottom: 1px solid #888888;
+}
+dt {
+	width: 50px;
+}
+dd {
+	width: 170px;
+	text-align: right;
+}
+</style>
+</head>
+<body>
+
+<h1>Quota Management test - Storage Profile</h1>
+<p>This test tries to call  the <code>queryInfo()</code> method of the <a href="http://www.w3.org/TR/quota-api/#idl-def-StorageQuota"><code>StorageQuota</code> interface</a> specified in <cite>Quota Management API</cite>. If suceeded, the total size, the free size, and used size will be shown.</p>
+<p id="msg">now checking ...</p>
+<p>
+	<meter value="0" min="0" max="100" low="80" high="90" optimum="0"></meter>
+	<span id="per">0</span> %
+</p>
+<dl>
+	<dt>Total</dt>
+	<dd><span id="total">0</span> bytes</dd>
+	<dt>Free</dt>
+	<dd><span id="free">0</span> bytes</dd>
+	<dt>Used</dt>
+	<dd><span id="used">0</span> bytes</dd>
+</dl>
+
+<script>
+(function () {
+
+window.addEventListener("load", function() {
+	navigator.storageQuota = navigator.storageQuota || navigator.webkitStorageQuota || navigator.mozStorageQuota || navigator.msStorageQuota;
+	if(!navigator.storageQuota) {
+		showMessage("Error: Quota Management API is not implemented.", false);
+		return;
+	}
+	navigator.storageQuota.queryInfo("temporary").then(
+		function(info) {
+			document.getElementById("used").textContent = info.usage;
+			document.getElementById("total").textContent = info.quota;
+			document.getElementById("free").textContent = info.quota - info.usage;
+			showMessage("Success", true);
+		}
+	);
+}, false);
+
+function showMessage(msg, success_flag) {
+	var el = document.getElementById("msg");
+	el.textContent = msg;
+	if(success_flag) {
+		el.classList.add("success");
+	} else {
+		el.classList.add("error");
+	}
+}
+
+})();
+</script>
+
+</body>
+</html>

@@ -81,7 +81,7 @@ figure figcaption {
 	<p><a href="http://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"></a></p>
 	<h1>Architecture and Requirements for Web-based Signage Player - Storage Profile</h1>
 	<p id="sub-title">Editor's Draft
-		<time datetime="2014-10-02">5 Oct 2014</time>
+		<time datetime="2014-10-08">8 Oct 2014</time>
 	</p>
 	<dl>
 		<dt>This Version:</dt>
@@ -133,7 +133,7 @@ figure figcaption {
 			</ol>
 		</li>
 		<li><a href="#cors">5 Cross-Origin Resource Sharing</a></li>
-		<li><a href="#background_fetching_and_storing">6 Background fetching and storing</a></li>
+		<li><a href="#quota_management">6 Quota management</a></li>
 		<li><a href="#runtime_conformance_test_suites">7 Runtime conformance test suites</a></li>
 		<li><a href="#references">References</a></li>
 	</ol>
@@ -190,7 +190,7 @@ function loadVideoFile() {
 }</code></pre>
 	</figure>
 	<p>The <a href="#application">application</a> can use <cite>Indexed Database API</cite> or <cite>File API: Directories and System</cite> to store files. These APIs allow scripts to store Blob objects directly.</p>
-	<p>The <a href="#runtime">runtime</a> must support <cite>XMLHttpRequest</cite>. The <a href="#runtime">runtime</a> must support <cite>Indexed Database API</cite> or <cite>File API: Directories and System</cite>. Besides the <a href="#runtime">runtime</a> must support storing Blob objects directly, which is specified in <cite>File API</cite>. <a href="#refsXHR">[XHR]</a> <a href="refsIDB">[IDB]</a> <a href="#refsFILESYS">[FSYS]</a> <a href="#refsFILE">[FILE]</a></p>
+	<p>The <a href="#runtime">runtime</a> must support <cite>XMLHttpRequest</cite>. The <a href="#runtime">runtime</a> must support <cite>Indexed Database API</cite> or <cite>File API: Directories and System</cite>. Besides the <a href="#runtime">runtime</a> must support storing Blob objects directly, which is specified in <cite>File API</cite>. <a href="#refsXHR">[XHR]</a> <a href="refsIDB">[IDB]</a> <a href="#refsFILEDIR">[FILEDIR]</a> <a href="#refsFILE">[FILE]</a></p>
 	<section>
 		<h3 id="storing_contents_idb">3.1 Indexed Database API</h3>
 		<figure>
@@ -248,10 +248,12 @@ function saveBlobFsys(blob) {
     });
 }</code></pre>
 		</figure>
+		<p>Note that <cite><a href="http://www.w3.org/TR/file-system-api/">File API: Directories and System</a></cite> has been deprecated, the detailed specification has been deleted from the oficial public draft. Now you can see the detailed specification in <a href="http://dev.w3.org/2009/dap/file-system/file-dir-sys.html">the editor's draft.</a></p>
+		<p>Now <cite>File API: Directories and System</cite> has been replaced by <cite><a href="http://w3c.github.io/filesystem-api/Overview.html">FileSystem API</a></cite>. In the future, the <a href="#application">application</a>s are encouraged to use <cite><a href="http://w3c.github.io/filesystem-api/Overview.html">FileSystem API</a></cite> instead of <cite>File API: Directories and System</cite>. <a href="#refsFILESYS">[FILESYS]</a></p>
 	</section>
 </section>
 <section>
-	<h2 id="playing_stored_contents">4 Playing the stored contents</h2>
+	<h2 id="playing_stored_contents">4 Playing the stored contents </h2>
 	<section>
 		<h3 id="playing_stored_contents_idb">4.1. Indexed Database API</h3>
 		<p>If the <a href="#application">application</a> uses <cite>Indexed Database API</cite> to store files, it gets the file as a Blob object. The <a href="#application">application</a> creates a blob URL from the Blob object using <code>URL.createObjectURL()</code> method, which is specified in <cite>File API</cite>. Then The <a href="#application">application</a> creates a appropriate HTML element (e.g. <code>video</code> element if a video file, <code>audio</code> element if a audio file, <code>img</code> element if a image file) and sets the <code>src</code> attribute to the blob URL.</p>
@@ -352,30 +354,42 @@ function removeVideoElementFsys(event) {
 	<p><cite>XMLHttpRequest</cite> normally does not allow <a href="#application">application</a>s (scripts) to fetch files whose origin is different from the <a href="#application">application</a>. To do so, the <a href="#runtime">runtime</a> and content delivery servers must support <cite>Cross-Origin Resource Sharing</cite>. The conformant <a href="#runtime">runtime</a> must support at least <a href="http://www.w3.org/TR/cors/#origin-request-header">Origin Request Header</a> and <a href="http://www.w3.org/TR/cors/#access-control-allow-origin-response-header">Access-Control-Allow-Origin</a> specified in <cite>Cross-Origin Resource Sharing</cite>. <a href="#refsCORS">[CORS]</a></p>
 </section>
 <section>
-	<h2 id="background_fetching_and_storing">6 Background fetching and storing</h2>
-	<p>TBD</p>
+	<h2 id="quota_management">6 Quota management</h2>
+	<p>When the <a href="#application">application</a> stores resource files (e.g. video file, image files), the <a href="#application">application</a> needs to know the total size, used size, and free size of the storage.</p>
+	<p><cite>Quota Management API</cite> meets this requirements. <cite>Quota Management API</cite> allows scripts to get the total size and the used size of the storage. The free size is available substracting the free size from the total size.</p>
+	<p>If <a href="#runtime">runtime</a> supports <cite>Quota Management API</cite>, the <a href="#application">application</a> can get the information about the quota using the <code>queryInfo()</code> method of the <a href="http://www.w3.org/TR/quota-api/#idl-def-StorageQuota"><code>StorageQuota</code> interface</a>.</p>
+	<figure>
+		<figcaption>Quota Management API code example</figcaption>
+		<pre class="code"><code>navigator.storageQuota.queryInfo(&quot;temporary&quot;).then(
+    function(info) {
+        console.log(&quot;Total: &quot; + info.quota + &quot; bytes&quot;);
+        console.log(&quot;Used : &quot; + info.usage + &quot; bytes&quot;);
+        console.log(&quot;Free : &quot; + (info.quota - info.usage) + &quot; bytes&quot;);
+    }
+);</code></pre>
+	</figure>
+	<p>The <a href="#runtime">runtime</a> must support <cite>Quota Management API</cite>. <a href="#refsQUOTA">[QUOTA]</a></p>
 </section>
 <section>
 	<h2 id="runtime_conformance_test_suites">7 Runtime conformance test suites</h2>
 	<p>The conformant <a href="#runtime">runtime</a> must run the test suites appropriately without any JavaScript error:</p>
 	<dl>
-		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/foreground.html">Foreground fetching and storering test</a></dt>
+		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/storage.html">Fetching and storering test</a></dt>
 		<dd>
 			<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
-			<p>The <a href="#runtime">runtime</a> downloads a video file as a blob object using <cite>XMLHttpRequest</cite>. Then the <a href="#runtime">runtime</a> stores the file using <cite>Indexed Database API</cite> if supported. if not, the <a href="#runtime">runtime</a> try to use <cite>File API: Directories and System</cite>. </p>
-			<p>If the file is stored successfully, the <a href="#runtime">runtime</a> gets the file as a blob object from the storage, creates a <code>video</code> element, then plays the video. </p>
-		</dd>
-		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/background.html">Backcground fetching and storering test</a></dt>
-		<dd>
-			<p>If the <a href="#runtime">runtime</a> support the background storing, it must run this test appropriately.</p>
-			<p>This test is almost same as the foreground storing test except using Web Workers. In this test, all of <cite>XMLHttpRequest</cite>, <cite>Indexed Database API</cite>, and <cite>File API: Directories</cite> are used in a worker thread.</p>
-			<p>If the <a href="#runtime">runtime</a> gets a Blob URL or a File URL successfully through a message chanel, it creates a <code>video</code> element, then plays the video. </p>
+			<p>This test downloads a video file as a blob object using <cite>XMLHttpRequest</cite>. Then the file is stored using <cite>Indexed Database API</cite> if supported. If not, this test tries to use <cite>File API: Directories and System</cite>. </p>
+			<p>If the file is stored successfully, this test  tries to get the file as a blob object from the storage, to create a <code>video</code> element, then to play the video. </p>
 		</dd>
 		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/cors.html">CORS test</a></dt>
 		<dd>
 			<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
-			<p>The <a href="#runtime">runtime</a> downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from the test script.</p>
+			<p>This test downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from this test script.</p>
 			<p>If the image file is downloaded successfully, it will be shown in this test page.</p>
+		</dd>
+		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/quota.html">Quota Management test</a></dt>
+		<dd>
+			<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
+			<p>This test tries to call  the <code>queryInfo()</code> method of the <a href="http://www.w3.org/TR/quota-api/#idl-def-StorageQuota"><code>StorageQuota</code> interface</a> specified in <cite>Quota Management API</cite>. If suceeded, the total size, the free size, and used size will be shown.</p>
 		</dd>
 	</dl>
 </section>
@@ -387,12 +401,16 @@ function removeVideoElementFsys(event) {
 		<dd><cite><a href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing</a></cite>, Anne van Kesteren. W3C.</dd>
 		<dt id="refsFILE">[FILE]</dt>
 		<dd><cite><a href="http://www.w3.org/TR/FileAPI/">File API</a></cite>, Arun Ranganathan, Jonas Sicking. W3C.</dd>
-		<dt id="refsFSYS">[FSYS]</dt>
+		<dt id="refsFILEDIR">[FILEDIR]</dt>
 		<dd><cite><a href="http://www.w3.org/TR/file-system-api/">File API: Directories and System</a></cite>, Eric Uhrhane. W3C.</dd>
+		<dt id="refsFILESYS">[FILESYS]</dt>
+		<dd><cite><a href="http://w3c.github.io/filesystem-api/Overview.html">FileSystem API</a></cite>, Arun Ranganathan. W3C.</dd>
 		<dt id="refsHTML5">[HTML5]</dt>
 		<dd><cite><a href="http://www.w3.org/TR/html5/">HTML5</a></cite>, Robin Berjon, Travis Leithead, Erika Doyle Navara, Edward O'Connor, Silvia Pfeiffer, Ian Hickson. W3C.</dd>
 		<dt id="refsIDB">[IDB]</dt>
 		<dd><cite><a href="http://www.w3.org/TR/IndexedDB/">Indexed Database API</a></cite>, Nikunj Mehta, Jonas Sicking, Eliot Graff, Andrei Popescu, Jeremy Orlow, Joshua Bell. W3C.</dd>
+		<dt id="refsQUOTA">[QUOTA]</dt>
+		<dd><cite><a href="http://www.w3.org/TR/quota-api/">Quota Management API</a></cite>, Kinuko Yasuda. W3C.</dd>
 		<dt id="refsRFC2119">[RFC2119]</dt>
 		<dd><cite><a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a></cite>, S. Bradner. IETF.</dd>
 		<dt id="refsWORKERS">[WORKERS]</dt>

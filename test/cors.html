@@ -10,6 +10,15 @@ body {
 h1 {
 	font-size: 140%;
 }
+code {
+	font-family: Consolas, monospace;
+}
+#msg.error {
+	color: red;
+}
+#msg.success {
+	color: green;
+}
 #box {
 	width: 400px;
 	height: 300px;
@@ -24,10 +33,10 @@ h1 {
 <body>
 
 <h1>CORS test - Storage Profile</h1>
-<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
-<p>The <a href="#runtime">runtime</a> downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from the test script.</p>
+<p>This test downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from this test script.</p>
 <p>If the image file is downloaded successfully, it will be shown in this test page.</p>
 
+<p id="msg">now checking ...</p>
 <div id="box"></div>
 
 <p>This test uses an image file hosted in <a href="http://www.html5rocks.com/en/">HTML5 Rocks</a>. The image file is hosted <a href="http://www.html5rocks.com/static/images/mastheads/h5r-shadow.png">here</a>. If the image file is downloaded successfully, you will see the HTML Rocks logo in the block above.</p>
@@ -44,10 +53,26 @@ window.addEventListener("load",function() {
 			var el = document.createElement("img");
 			el.src = window.URL.createObjectURL(xhr.response);
 			document.getElementById("box").appendChild(el);
+			showMessage("Success", true);
+		} else {
+			showMessage("Error: Failed to fetch the resoce (" + xhr.status + " " + xhr.statusText + ")", false);
 		}
+	};
+	xhr.onerror = function(e) {
+		showMessage("Error: Failed to fetch the resource. Check the logs shown in the JavaScript console of your browser." , false);
 	};
 	xhr.send();
 }, false);
+
+function showMessage(msg, success_flag) {
+	var el = document.getElementById("msg");
+	el.textContent = msg;
+	if(success_flag) {
+		el.classList.add("success");
+	} else {
+		el.classList.add("error");
+	}
+}
 
 })();
 </script>
