@@ -81,7 +81,7 @@ figure figcaption {
 	<p><a href="http://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"></a></p>
 	<h1>Architecture and Requirements for Web-based Signage Player - Storage Profile</h1>
 	<p id="sub-title">Editor's Draft
-		<time datetime="2014-10-08">8 Oct 2014</time>
+		<time datetime="2014-10-09">9 Oct 2014</time>
 	</p>
 	<dl>
 		<dt>This Version:</dt>
@@ -123,13 +123,13 @@ figure figcaption {
 		<li> <a href="#storing_contents">3 Storing contents</a>
 			<ol class="toc">
 				<li><a href="#storing_contents_idb">3.1 Indexed Database API</a></li>
-				<li><a href="#storing_contents_fsys">3.2 File API: Directories and System</a></li>
+				<li><a href="#storing_contents_filedir">3.2 File API: Directories and System</a></li>
 			</ol>
 		</li>
 		<li> <a href="#playing_stored_contents">4 Playing the stored contents</a>
 			<ol class="toc">
 				<li><a href="#playing_stored_contents_idb">4.1 Indexed Database API</a></li>
-				<li><a href="#playing_stored_contents_fsys">4.2 File API: Directories and System</a></li>
+				<li><a href="#playing_stored_contents_filedir">4.2 File API: Directories and System</a></li>
 			</ol>
 		</li>
 		<li><a href="#cors">5 Cross-Origin Resource Sharing</a></li>
@@ -225,7 +225,7 @@ function saveBlobIdb(blob) {
 		</figure>
 	</section>
 	<section>
-		<h3 id="storing_contents_fsys">3.2 File API: Directories and System</h3>
+		<h3 id="storing_contents_filedir">3.2 File API: Directories and System</h3>
 		<figure>
 			<figcaption>File API: Directories and System code example</figcaption>
 			<pre class="code"><code>// Save the blob in the File System
@@ -307,7 +307,7 @@ function removeVideoElementIdb(event) {
 		<p>The <a href="#runtime">runtime</a> must support <code>URL.createObjectURL()</code> method. <a href="#refsFILE">[FILE]</a> </p>
 	</section>
 	<section>
-		<h3 id="playing_stored_contents_idb">4.2 File API: Directories and System</h3>
+		<h3 id="playing_stored_contents_filedir">4.2 File API: Directories and System</h3>
 		<p>If the <a href="#application">application</a> uses <cite>File API: Directories and System</cite> to store files, </p>
 		<figure>
 			<figcaption>File API: Directories and System code example</figcaption>
