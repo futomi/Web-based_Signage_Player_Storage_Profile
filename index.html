@@ -104,7 +104,7 @@ figure figcaption {
 	<h2 id="abstract">Abstract</h2>
 	<p>This Profile defines requirements for storing downloaded files and  playing the stored contents in the terminal </p>
 	<p>Web-based Signage is basically assumed to be online. But some signage terminals are connected to a narrowband network, some signage terminals use a time-limited network. Especially when playing videos, instability of the the network quality could cause a service outage. </p>
-	<p>Storeing contents and playing the stored contents ensure that contents are played  reliably regardless of the state of the network, that the network traffic is reduced, and that web-based signage services are   cost-effective. Storeing contents and playing the stored contents are essential for web-based signage. </p>
+	<p>Storing contents and playing the stored contents ensure that contents are played  reliably regardless of the state of the network,  the network traffic is reduced, and  web-based signage services are   cost-effective. Storing contents and playing the stored contents are essential for web-based signage. </p>
 </section>
 <section>
 	<h2 class="no-num no-toc" id="status-of-this-document">Status of this document</h2>
@@ -247,7 +247,7 @@ function saveBlobFsys(blob) {
     });
 }</code></pre>
 		</figure>
-		<p>Note that <cite><a href="http://www.w3.org/TR/file-system-api/">File API: Directories and System</a></cite> has been deprecated, the detailed specification has been deleted from the oficial public draft. Now you can see the detailed specification in <a href="http://dev.w3.org/2009/dap/file-system/file-dir-sys.html">the editor's draft.</a></p>
+		<p>Note that <cite><a href="http://www.w3.org/TR/file-system-api/">File API: Directories and System</a></cite> has been deprecated, the detailed specification has been deleted from the official public draft. Now you can see the detailed specification in <a href="http://dev.w3.org/2009/dap/file-system/file-dir-sys.html">the editor's draft.</a></p>
 		<p>Now <cite>File API: Directories and System</cite> has been replaced by <cite><a href="http://w3c.github.io/filesystem-api/Overview.html">FileSystem API</a></cite>. In the future, the <a href="#application">application</a>s are encouraged to use <cite><a href="http://w3c.github.io/filesystem-api/Overview.html">FileSystem API</a></cite> instead of <cite>File API: Directories and System</cite>. <a href="#refsFILESYS">[FILESYS]</a></p>
 	</section>
 </section>
@@ -303,12 +303,12 @@ function removeVideoElementIdb(event) {
     el.parentNode.removeChild(el);
 }</code></pre>
 		</figure>
-		<p>The <a href="#application">application</a> is strongly engouraged to call <code>URL.revokeObjectURL()</code> to release the blob URL when the relevant HTML element was removed from the document. If the <a href="#application">application</a> removes the element associated with the blob URL without releasing the blob URL, the garbage collection of the JavaScript engine in the <a href="#runtime">runtime</a> doesn't work as expected. It causes memory leak and prevents stable long run as a signage terminal.</p>
+		<p>The <a href="#application">application</a> is strongly encouraged to call <code>URL.revokeObjectURL()</code> to release the blob URL when the relevant HTML element was removed from the document. If the <a href="#application">application</a> removes the element associated with the blob URL without releasing the blob URL, the garbage collection of the JavaScript engine in the <a href="#runtime">runtime</a> doesn't work as expected. It causes memory leak and prevents stable long run as a signage terminal.</p>
 		<p>The <a href="#runtime">runtime</a> must support <code>URL.createObjectURL()</code> method. <a href="#refsFILE">[FILE]</a> </p>
 	</section>
 	<section>
 		<h3 id="playing_stored_contents_filedir">4.2 File API: Directories and System</h3>
-		<p>If the <a href="#application">application</a> uses <cite>File API: Directories and System</cite> to store files, </p>
+		<p>If the <a href="#application">application</a> uses <cite>File API: Directories and System</cite> to store files, it can get a file URL. Though the <a href="#application">application</a> can get a file as a Blob object, it doesn't need to do. If the <a href="#application">application</a> shows a file using the <code>img</code> element or the <code>video</code> element, the file URL is enough for the purpose.</p>
 		<figure>
 			<figcaption>File API: Directories and System code example</figcaption>
 			<pre class="code"><code>// Get the blob from the file system
@@ -349,13 +349,13 @@ function removeVideoElementFsys(event) {
 </section>
 <section>
 	<h2 id="cors">5 Cross-Origin Resource Sharing</h2>
-	<p>In practice, A <a href="#web-based_signage">web-based signage</a> system consists of not only <a href="#player">player</a>s but also content delivery servers and content management systems. In some cases, script files assosiated with the <a href="#application">application</a> could be hosted in other servers. That is, the origins of <a href="#contents">contents</a> and <a href="#application">application</a> are not necessarily same.</p>
+	<p>In practice, A <a href="#web-based_signage">web-based signage</a> system consists of not only <a href="#player">player</a>s but also content delivery servers and content management systems. In some cases, script files associated with the <a href="#application">application</a> could be hosted in other servers. That is, the origins of <a href="#contents">contents</a> and <a href="#application">application</a> are not necessarily same.</p>
 	<p><cite>XMLHttpRequest</cite> normally does not allow <a href="#application">application</a>s (scripts) to fetch files whose origin is different from the <a href="#application">application</a>. To do so, the <a href="#runtime">runtime</a> and content delivery servers must support <cite>Cross-Origin Resource Sharing</cite>. The conformant <a href="#runtime">runtime</a> must support at least <a href="http://www.w3.org/TR/cors/#origin-request-header">Origin Request Header</a> and <a href="http://www.w3.org/TR/cors/#access-control-allow-origin-response-header">Access-Control-Allow-Origin</a> specified in <cite>Cross-Origin Resource Sharing</cite>. <a href="#refsCORS">[CORS]</a></p>
 </section>
 <section>
 	<h2 id="quota_management">6 Quota management</h2>
 	<p>When the <a href="#application">application</a> stores resource files (e.g. video file, image files), the <a href="#application">application</a> needs to know the total size, used size, and free size of the storage.</p>
-	<p><cite>Quota Management API</cite> meets this requirements. <cite>Quota Management API</cite> allows scripts to get the total size and the used size of the storage. The free size is available substracting the free size from the total size.</p>
+	<p><cite>Quota Management API</cite> meets this requirements. <cite>Quota Management API</cite> allows scripts to get the total size and the used size of the storage. The free size is available subtracting the free size from the total size.</p>
 	<p>If <a href="#runtime">runtime</a> supports <cite>Quota Management API</cite>, the <a href="#application">application</a> can get the information about the quota using the <code>queryInfo()</code> method of the <a href="http://www.w3.org/TR/quota-api/#idl-def-StorageQuota"><code>StorageQuota</code> interface</a>.</p>
 	<figure>
 		<figcaption>Quota Management API code example</figcaption>
@@ -382,13 +382,13 @@ function removeVideoElementFsys(event) {
 		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/cors.html">CORS test</a></dt>
 		<dd>
 			<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
-			<p>This test downloads a image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from this test script.</p>
+			<p>This test downloads an image file as a blob object using <cite>XMLHttpRequest</cite> from the site whose origin is different from this test script.</p>
 			<p>If the image file is downloaded successfully, it will be shown in this test page.</p>
 		</dd>
 		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Storage_Profile/test/quota.html">Quota Management test</a></dt>
 		<dd>
 			<p>All of the conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
-			<p>This test tries to call  the <code>queryInfo()</code> method of the <a href="http://www.w3.org/TR/quota-api/#idl-def-StorageQuota"><code>StorageQuota</code> interface</a> specified in <cite>Quota Management API</cite>. If suceeded, the total size, the free size, and used size will be shown.</p>
+			<p>This test tries to call  the <code>queryInfo()</code> method of the <a href="http://www.w3.org/TR/quota-api/#idl-def-StorageQuota"><code>StorageQuota</code> interface</a> specified in <cite>Quota Management API</cite>. If succeeded, the total size, the free size, and used size will be shown.</p>
 		</dd>
 	</dl>
 </section>

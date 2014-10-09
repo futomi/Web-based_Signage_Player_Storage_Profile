@@ -79,6 +79,9 @@ window.addEventListener("load", function() {
 			document.getElementById("used").textContent = info.usage;
 			document.getElementById("total").textContent = info.quota;
 			document.getElementById("free").textContent = info.quota - info.usage;
+			var per = Math.round(info.usage * 100 / info.quota);
+			document.getElementById("per").textContent = per;
+			document.querySelector("meter").value = per;
 			showMessage("Success", true);
 		}
 	);
