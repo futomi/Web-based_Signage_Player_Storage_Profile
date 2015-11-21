@@ -81,7 +81,7 @@ figure figcaption {
 	<p><a href="http://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"></a></p>
 	<h1>Architecture and Requirements for Web-based Signage Player - Storage Profile</h1>
 	<p id="sub-title">Draft Report
-		<time datetime="2015-11-20">20 Nov 2015</time>
+		<time datetime="2015-11-21">21 Nov 2015</time>
 	</p>
 	<dl>
 		<!--
@@ -144,7 +144,7 @@ figure figcaption {
 	<h2 id="introduction">1 Introduction</h2>
 	<p><i>This section is non-normative.</i></p>
 	<p>The &quot;<b>Architecture and Requirements for Web-based Signage Player</b>&quot; defines precise requirements for web-based signage players.</p>
-	<p>The Architecture and Requirements for Web-based Signage Player consist of a number of profiles. Basically, web-based signage is based on the core profile (this document). As necessary, web-based signage systems adopt the other profiles additionally.</p>
+	<p>The Architecture and Requirements for Web-based Signage Player consist of a number of profiles. Basically, web-based signage is based on the core profile. As necessary, web-based signage systems adopt the other profiles additionally.</p>
 	<p>These profiles are also intended to be used as product specification sheets of web-based signage products for vendors, RFP (request for proposal) used by the signage operators to request SDCs (Systems Development Corporations) to develop a web-based signage system , etc.</p>
 	<p>Through these activities, the Web-based Signage Business Group aims to:</p>
 	<ul>
@@ -157,7 +157,7 @@ figure figcaption {
 <section>
 	<h2 id="terminology">2 Scope and terminology</h2>
 	<p><dfn id="web-based_signage">Web-based signage</dfn> is digital signage whose contents are created using web-technologies. Besides, it has a capability of connecting to a network. It is not a matter whether the network is the Internet or not. The web-based signage includes the terminal in an intranet.</p>
-	<p>A <dfn id="player">player</dfn> plays <a href="#contents">contents</a> for <a href="#web-based_signage">web-based signage</a>. It is a set of an <a href="#application">application</a> and a <a href="#runtime">runtime</a>. This document is not aimed for limitation of underlying hardware and the operating system. Basically, <a href="#web-based_signage">web-based signage</a> is based on the core profile (this document). As necessary, web-based signage systems adopt the other profiles additionally.</p>
+	<p>A <dfn id="player">player</dfn> plays <a href="#contents">contents</a> for <a href="#web-based_signage">web-based signage</a>. It is a set of an <a href="#application">application</a> and a <a href="#runtime">runtime</a>. This document is not aimed for limitation of underlying hardware and the operating system. Basically, <a href="#web-based_signage">web-based signage</a> is based on the core profile. As necessary, web-based signage systems adopt the other profiles additionally.</p>
 	<p>An <dfn id="application">application</dfn> is comprised of the software such as frameworks or the libraries for signage. An <a href="#application">application</a> is a set of JavaScript programs and style sheets and HTML. An <a href="#application">application</a> is run on a <a href="#runtime">runtime</a>, fetches contents form a content server, then plays the <a href="#contents">contents</a> appropriately. The architecture and the functions of the applications will be prescribed as the features for <a href="#web-based_signage">web-based signage</a>.</p>
 	<p>A <a href="#player">player</a> uses the functions and the expressions which the underlying <a href="#runtime">runtime</a> provides. Basically, they are specified in HTML5 in wide sense. This document does not restrict the use of the functions which are out of scope of this document. <a href="#application">Application</a>s may use such functions and expressions.</p>
 	<p>A <dfn id="runtime">runtime</dfn> is a common web browser (e.g. webkit-based browsers, Firefox, IE, etc.) or a web-based application runtime (e.g. Firefox OS, Tizen, Windows 8, etc.) installed in tablets, PCs, STBs, TV (most of current high-end TV products implement a web-browser), etc. On the other hand, it is not a dedicated subset or subset-based derivation of HTML5 in wide sense. Basically, <a href="#runtime">runtime</a> offers functions called HTML5 in the wide sense. Basically, the specifications of HTML5 in wide sense are be specified particularly by W3C.</p>
